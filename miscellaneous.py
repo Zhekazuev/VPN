@@ -21,7 +21,7 @@ class OracleDB:
         @author: jbaranski
         https://gist.github.com/jbaranski/6537b4075873984ea06e5fbe291f4441
     """
-    def __init__(self, host=Misc.ORACLE_IP, port=Misc.ORACLE_PORT, username=Misc.ORACLE_USER,
+    def __init__(self, host=Misc.ORACLE_IP_MAIN, port=Misc.ORACLE_PORT, username=Misc.ORACLE_USER,
                  password=Misc.ORACLE_PASS, database=Misc.ORACLE_DB_NAME):
         self.connection = None
         self.cursor = None
