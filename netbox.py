@@ -1,5 +1,4 @@
 """
-RESTBOX
 RESTful API realisation for Netbox
 Methods need to work with Netbox
 """
