@@ -85,7 +85,6 @@ def add_subscriber_oracle(attributes, config_id, msisdn, customer_id, profile_id
     new_user = miscellaneous.Insert().Users().all(oracle, connection, cursor,
                                                   msisdn, customer_id, config_id, profile_id, password)
     oracle.close(connection, cursor)
-
     return {"status": "good", "info": {"new_user": new_user, "results": results}}
 
 
