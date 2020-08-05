@@ -1194,6 +1194,28 @@ class Update:
             return {"old": old, "new": new}
 
         @staticmethod
+        def username(oracle, connection, cursor, old_username, new_username):
+            """UPDATE SDP.VPN_USERS SET USER_NAME='375291111111' WHERE USER_NAME='375291234567'
+
+            Parameters:
+            :param oracle: object oracle
+            :param connection: object connection
+            :param cursor: object cursor
+            :param old_username: '375291234567'
+            :param new_username: '375291111111'
+
+            Returns:
+            :return: {"old": [Select before delete], "new": [Select after delete]}
+            :rtype: dict"""
+            cursor.execute(f"SELECT * FROM SDP.VPN_USERS WHERE USER_NAME='{old_username}'")
+            old = oracle.make_dictionary_results(cursor)
+            cursor.execute(f"UPDATE SDP.VPN_USERS SET USER_NAME='{new_username}' WHERE USER_NAME='{old_username}'")
+            connection.commit()
+            cursor.execute(f"SELECT * FROM SDP.VPN_USERS WHERE USER_NAME='{new_username}'")
+            new = oracle.make_dictionary_results(cursor)
+            return {"old": old, "new": new}
+
+        @staticmethod
         def password_username_equals(oracle, connection, cursor, password, username):
             """UPDATE SDP.VPN_USERS SET PASSWORD='12345qwerty' WHERE USER_NAME='375291234567'
 
