@@ -47,7 +47,7 @@ def check_vrf(vrf_name):
 
 def main():
     # input_data = {"msisdn": 375291797391,
-    #               "vrf":{"name": "VPN-BELENERGO",
+    #               "vrf": {"name": "VPN-BELENERGO",
     #                      "rd": 10234}
     #               }
     # checking parameter passing
