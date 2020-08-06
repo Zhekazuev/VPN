@@ -34,10 +34,36 @@ def get_ip_netbox(pool_name):
     return {"status": "good", "address": ip_address}
 
 
+def create_address(netbox_message, pool_name):
+    try:
+        value = netbox_message.get("address").split("/")[0]
+    except IndexError:
+        return {"status": "error", "message": "Failed to get address from Netbox"}
+    prefixes = netbox.Read().Prefixes().get_by_name(pool_name)
+    if prefixes.get("count") is None:
+        return {"status": "error", "message": f"Prefixes named {pool_name} does not exist"}
+    try:
+        prefix = prefixes.get('results')[0]
+    except IndexError:
+        return {"status": "error", "message": f"Failed to get Prefix named {pool_name} from Netbox"}
+    try:
+        vrf_id = prefix.get('vrf').get('id')
+    except KeyError:
+        return {"status": "error", "message": f"Failed to get VRF ID from Netbox"}
+    try:
+        tenant_id = prefix.get('tenant').get('id')
+    except KeyError:
+        return {"status": "error", "message": f"Failed to get Tenant ID from Netbox"}
+    netbox.Create().Addresses().create(address=value, vrf_id=vrf_id, tenant_id=tenant_id,
+                                       description='', custom_fields={})
+    return {"status": "good", "message": value}
+
+
 def check_config_id(config_id):
     oracle = miscellaneous.OracleDB(host=Misc.ORACLE_IP_TEST)
     connection, cursor = oracle.connect()
     result = miscellaneous.Select().Attributes().config_id_equals(oracle, cursor, config_id)
+    oracle.close(connection, cursor)
     if result:
         return {"status": "error", "message": f"The provided config_id {config_id} is already in use: {result}"}
     else:
@@ -49,34 +75,18 @@ def add_subscriber_oracle(attributes, config_id, msisdn, customer_id, profile_id
     connection, cursor = oracle.connect()
     results = []
 
+    pool_name = attributes.get("Framed-Pool")
+    netbox_message = get_ip_netbox(attributes.get(pool_name))
+    if netbox_message.get("status") is "error":
+        return netbox_message
+
     for name, value in attributes.items():
         if name == "Framed-IP-Address" and value == "":
-            pool_name = attributes.get("Framed-Pool")
-            netbox_message = get_ip_netbox(attributes.get(pool_name))
-            if netbox_message.get("status") is "error":
-                return netbox_message
-            try:
-                value = netbox_message.get("address").split("/")[0]
-            except IndexError:
-                return {"status": "error", "message": "Failed to get address from Netbox"}
-            prefixes = netbox.Read().Prefixes().get_by_name(pool_name)
-            if prefixes.get("count") is None:
-                return {"status": "error", "message": f"Prefixes named {pool_name} does not exist"}
-            try:
-                prefix = prefixes.get('results')[0]
-            except IndexError:
-                return {"status": "error", "message": f"Failed to get Prefix named {pool_name} from Netbox"}
-            try:
-                vrf_id = prefix.get('vrf').get('id')
-            except KeyError:
-                return {"status": "error", "message": f"Failed to get VRF ID from Netbox"}
-            try:
-                tenant_id = prefix.get('tenant').get('id')
-            except KeyError:
-                return {"status": "error", "message": f"Failed to get Tenant ID from Netbox"}
-
-            netbox.Create().Addresses().create(address=value, vrf_id=vrf_id, tenant_id=tenant_id,
-                                               description='', custom_fields={})
+            create_address_message = create_address(netbox_message, pool_name)
+            if create_address_message.get("status") is "error":
+                return create_address_message
+            else:
+                value = create_address_message.get("message")
         result = miscellaneous.Insert().Attributes().all(oracle, connection, cursor, value, config_id, name)
         try:
             results.append(result[0])
@@ -89,24 +99,24 @@ def add_subscriber_oracle(attributes, config_id, msisdn, customer_id, profile_id
 
 
 def main():
-    input_data = {"msisdn": 375291797391,
-                  "attributes": {"SN-VPN-Name": "Gi-1",
-                                 "SN1-Rad-APN-Name": "vpn.mpls",
-                                 "Framed-IP-Address": "",
-                                 "Framed-Pool": "VPN-BELENERGO_2"},
-                  "config_id": 78900,
-                  "customer_id": 10,
-                  "profile_id": 11,
-                  "password": ""}
-    # try:
-    #     input_string = sys.argv[1]
-    # except IndexError:
-    #     return {"status": "error", "message": "Parameters required"}
-    # # checking if the passed parameter is correct - need json string
-    # try:
-    #     input_data = json.loads(input_string)
-    # except json.decoder.JSONDecodeError as json_error:
-    #     return {"status": "error", "message": str(json_error)}
+    # input_data = {"msisdn": 375291797391,
+    #               "attributes": {"SN-VPN-Name": "Gi-1",
+    #                              "SN1-Rad-APN-Name": "vpn.mpls",
+    #                              "Framed-IP-Address": "",
+    #                              "Framed-Pool": "VPN-BELENERGO_2"},
+    #               "config_id": 78900,
+    #               "customer_id": 10,
+    #               "profile_id": 11,
+    #               "password": ""}
+    try:
+        input_string = sys.argv[1]
+    except IndexError:
+        return {"status": "error", "message": "Parameters required"}
+    # checking if the passed parameter is correct - need json string
+    try:
+        input_data = json.loads(input_string)
+    except json.decoder.JSONDecodeError as json_error:
+        return {"status": "error", "message": str(json_error)}
 
     # Check MSISDN
     check_msisdn = re.findall(r"^375\d{9}$", str(input_data.get("msisdn")))
