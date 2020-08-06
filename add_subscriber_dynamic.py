@@ -20,7 +20,7 @@ def check_config_id(config_id):
 
 
 def add_subscriber_oracle(attributes, config_id, msisdn, customer_id, profile_id, password):
-    oracle = miscellaneous.OracleDB(host=Misc.ORACLE_IP_MAIN)
+    oracle = miscellaneous.OracleDB(host=Misc.ORACLE_IP_TEST)
     connection, cursor = oracle.connect()
     results = []
 
