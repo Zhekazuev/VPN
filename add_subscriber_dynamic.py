@@ -25,6 +25,8 @@ def add_subscriber_oracle(attributes, config_id, msisdn, customer_id, profile_id
     results = []
 
     for name, value in attributes.items():
+        if name == "Framed-IP-Address" and value == "":
+            continue
         result = miscellaneous.Insert().Attributes().all(oracle, connection, cursor, value, config_id, name)
         try:
             results.append(result[0])
