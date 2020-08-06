@@ -21,7 +21,7 @@ def check_old_msisdn(old_msisdn):
         user.get('USER_NAME')
     except KeyError as key_error:
         return {"status": "error", "message": key_error}
-    pass
+    return {"status": "good", "message": user.get('USER_NAME')}
 
 
 def check_new_msisdn(new_msisdn):
@@ -36,7 +36,7 @@ def check_new_msisdn(new_msisdn):
         user.get('USER_NAME')
     except KeyError as key_error:
         return {"status": "error", "message": key_error}
-    pass
+    return {"status": "good", "message": user.get('USER_NAME')}
 
 
 def change_msisdn(old_msisdn, new_msisdn):
@@ -47,7 +47,7 @@ def change_msisdn(old_msisdn, new_msisdn):
 
 
 def main():
-    # input_data = {"msisdn": {"old": 375291111111, "new": 375291797391}}
+    # input_data = {"msisdn": {"old": 375291797391, "new": 375291111111}}
     try:
         input_string = sys.argv[1]
     except IndexError:
