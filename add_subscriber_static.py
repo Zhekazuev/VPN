@@ -17,20 +17,20 @@ def get_ip_netbox(pool_name):
     try:
         prefix = prefixes.get("results")[0]
     except IndexError as prefix_index_error:
-        return {"status": "error", "message": prefix_index_error}
+        return {"status": "error", "message": f"Prefix:{prefix_index_error}"}
     try:
         prefix_id = prefix.get("id")
     except KeyError as prefix_key_error:
-        return {"status": "error", "message": prefix_key_error}
+        return {"status": "error", "message": f"Prefix: {prefix_key_error}"}
     addresses = netbox.Read().Addresses().get_free_ips_by_prefix_id(prefix_id)
     try:
         address = addresses[0]
     except IndexError as address_index_error:
-        return {"status": "error", "message": address_index_error}
+        return {"status": "error", "message": f"Address: {address_index_error}"}
     try:
         ip_address = address.get("address")
     except KeyError as address_key_error:
-        return {"status": "error", "message": address_key_error}
+        return {"status": "error", "message": f"Address: {address_key_error}"}
     return {"status": "good", "address": ip_address}
 
 
