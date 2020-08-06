@@ -16,7 +16,7 @@ def check_config_id(config_id):
     if result:
         return {"status": "error", "message": f"The provided config_id {config_id} is already in use: {result}"}
     else:
-        return {"status": "good", "info": f"The provided config_id {config_id} is not used"}
+        return {"status": "good", "message": f"The provided config_id {config_id} is not used"}
 
 
 def add_subscriber_oracle(attributes, config_id, msisdn, customer_id, profile_id, password):
@@ -33,7 +33,7 @@ def add_subscriber_oracle(attributes, config_id, msisdn, customer_id, profile_id
     new_user = miscellaneous.Insert().Users().all(oracle, connection, cursor,
                                                   msisdn, customer_id, config_id, profile_id, password)
     oracle.close(connection, cursor)
-    return {"status": "good", "info": {"new_user": new_user, "results": results}}
+    return {"status": "good", "message": {"new_user": new_user, "results": results}}
 
 
 def main():
@@ -55,8 +55,8 @@ def main():
         input_data = json.loads(input_string)
     except json.decoder.JSONDecodeError as json_error:
         return {"status": "error", "message": str(json_error)}
-    # Check MSISDN
 
+    # Check MSISDN
     check_msisdn = re.findall(r"^375\d{9}$", str(input_data.get("msisdn")))
     if not check_msisdn:
         return {"status": "error", "message": "You must enter an msisdn or "
