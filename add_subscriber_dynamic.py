@@ -40,7 +40,6 @@ def main():
     # input_data = {"msisdn": 375291797391,
     #               "attributes": {"SN-VPN-Name": "Gi-1",
     #                              "SN1-Rad-APN-Name": "vpn.mpls",
-    #                              "Framed-IP-Address": "",
     #                              "Framed-Pool": "VPN-BELENERGO_2"},
     #               "config_id": 78900,
     #               "customer_id": 10,
