@@ -31,12 +31,12 @@ def check_new_msisdn(new_msisdn):
     try:
         user = users[0]
     except IndexError:
-        return {"status": "error", "message": f"User with msisdn {new_msisdn} does not exist"}
+        return {"status": "good", "message": f"User with msisdn {new_msisdn} does not exist"}
     try:
         user.get('USER_NAME')
     except KeyError as key_error:
-        return {"status": "error", "message": key_error}
-    return {"status": "good", "message": user.get('USER_NAME')}
+        return {"status": "good", "message": key_error}
+    return {"status": "error", "message": f"User with msisdn {user.get('USER_NAME')} does exist"}
 
 
 def change_msisdn(old_msisdn, new_msisdn):
