@@ -33,7 +33,7 @@ def add_subscriber_oracle(attributes, config_id, msisdn, customer_id, profile_id
     new_user = miscellaneous.Insert().Users().all(oracle, connection, cursor,
                                                   msisdn, customer_id, config_id, profile_id, password)
     oracle.close(connection, cursor)
-    return {"status": "good", "message": {"new_user": new_user, "results": results}}
+    return {"status": "good", "message": {"user": new_user, "results": results}}
 
 
 def main():
@@ -56,7 +56,7 @@ def main():
     except json.decoder.JSONDecodeError as json_error:
         return {"status": "error", "message": str(json_error)}
 
-    # Check MSISDN
+    # Parameter check: MSISDN
     check_msisdn = re.findall(r"^375\d{9}$", str(input_data.get("msisdn")))
     if not check_msisdn:
         return {"status": "error", "message": "You must enter an msisdn or "
