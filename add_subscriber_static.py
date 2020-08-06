@@ -3,8 +3,8 @@ Add new subscriber in Oracle with static IPv4
 Input data: Number and Parameters(VRF, POOL, other attributes)
 """
 from config import Misc
-import miscellaneous
 import netbox
+import miscellaneous
 import json
 import sys
 import re

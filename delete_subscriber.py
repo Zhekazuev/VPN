@@ -3,8 +3,8 @@ Delete subscriber from Oracle
 Input data: Number
 """
 from config import Misc
-import miscellaneous
 import netbox
+import miscellaneous
 import json
 import sys
 import re

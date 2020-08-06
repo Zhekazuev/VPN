@@ -4,7 +4,6 @@ Input data: Number and Parameters(VRF, POOL, other attributes)
 """
 from config import Misc
 import miscellaneous
-import netbox
 import json
 import sys
 import re
