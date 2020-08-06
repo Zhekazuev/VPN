@@ -17,7 +17,7 @@ def get_ip_netbox(pool_name):
     try:
         prefix = prefixes.get("results")[0]
     except IndexError as prefix_index_error:
-        return {"status": "error", "message": f"Prefix:{prefix_index_error}"}
+        return {"status": "error", "message": f"Prefix: {prefix_index_error}"}
     try:
         prefix_id = prefix.get("id")
     except KeyError as prefix_key_error:
@@ -89,24 +89,24 @@ def add_subscriber_oracle(attributes, config_id, msisdn, customer_id, profile_id
 
 
 def main():
-    # input_data = {"msisdn": 375291797391,
-    #               "attributes": {"SN-VPN-Name": "Gi-1",
-    #                              "SN1-Rad-APN-Name": "vpn.mpls",
-    #                              "Framed-IP-Address": "",
-    #                              "Framed-Pool": "VPN-BELENERGO_2"},
-    #               "config_id": 78900,
-    #               "customer_id": 10,
-    #               "profile_id": 11,
-    #               "password": ""}
-    try:
-        input_string = sys.argv[1]
-    except IndexError:
-        return {"status": "error", "message": "Parameters required"}
-    # checking if the passed parameter is correct - need json string
-    try:
-        input_data = json.loads(input_string)
-    except json.decoder.JSONDecodeError as json_error:
-        return {"status": "error", "message": str(json_error)}
+    input_data = {"msisdn": 375291797391,
+                  "attributes": {"SN-VPN-Name": "Gi-1",
+                                 "SN1-Rad-APN-Name": "vpn.mpls",
+                                 "Framed-IP-Address": "",
+                                 "Framed-Pool": "VPN-BELENERGO_2"},
+                  "config_id": 78900,
+                  "customer_id": 10,
+                  "profile_id": 11,
+                  "password": ""}
+    # try:
+    #     input_string = sys.argv[1]
+    # except IndexError:
+    #     return {"status": "error", "message": "Parameters required"}
+    # # checking if the passed parameter is correct - need json string
+    # try:
+    #     input_data = json.loads(input_string)
+    # except json.decoder.JSONDecodeError as json_error:
+    #     return {"status": "error", "message": str(json_error)}
 
     # Check MSISDN
     check_msisdn = re.findall(r"^375\d{9}$", str(input_data.get("msisdn")))
